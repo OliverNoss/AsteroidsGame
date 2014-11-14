@@ -1,6 +1,8 @@
 //Oliver Noss CompSci Block4
 SpaceShip voyager = new SpaceShip();
 Star [] galaxy = new Star[200];
+Asteroid [] belt = new Asteroid[25];
+
 //work on fade function, call it first, then use effect for hyperspace or rockets.
 public void setup() 
 {
@@ -10,6 +12,9 @@ public void setup()
   for (int i = 0; i < galaxy.length; i++) {
     galaxy[i] = new Star();
   }
+  for (int i = 0; i < belt.length; i++) {
+    belt[i] = new Asteroid();
+  }
 }
 public void draw() 
 {
@@ -17,10 +22,15 @@ public void draw()
   for (int i = 0; i < galaxy.length; i++) {
     galaxy[i].show();
   }
+  for (int i = 0; i < belt.length; i++) {
+    belt[i].show();
+    belt[i].move();
+  }
   strokeWeight(1);
   voyager.rockets();
   voyager.show();
   voyager.move();
+  // james.show();
   // fade();
 }
 
@@ -86,25 +96,25 @@ class SpaceShip extends Floater
       fill(220,100,0,28);
       // ellipse((float)(myCenterX+6*Math.cos(myPointDirection*(Math.PI/180))), (float)(myCenterY+6*Math.sin(myPointDirection*(Math.PI/180))),8,8);
       fade((float)(myCenterX+8*Math.cos(myPointDirection*(Math.PI/180))), (float)(myCenterY+8*Math.sin(myPointDirection*(Math.PI/180))),15);
-  }
-  if(keyPressed && key=='s')
+    }
+    if(keyPressed && key=='s')
     {
      noStroke();
-      fill(200,100,0,50);
-      fade((float)(myCenterX-10*Math.cos(myPointDirection*(Math.PI/180))), (float)(myCenterY-10*Math.sin(myPointDirection*(Math.PI/180))),7);
-    }
-  }
-  public void setX(int x) {myCenterX=x;}  
-  public int getX() {return (int)myCenterX;}
-  public void setY(int y) {myCenterY=y;}   
-  public int getY() {return (int)myCenterY;}   
-  public void setDirectionX(double x) {myDirectionX=x;}   
-  public double getDirectionX() {return myDirectionX;}   
-  public void setDirectionY(double y) {myDirectionY=y;}   
-  public double getDirectionY() {return myDirectionY;}   
-  public void setPointDirection(int degrees) {myPointDirection=degrees;}   
-  public double getPointDirection() {return myPointDirection;} 
-}
+     fill(200,100,0,50);
+     fade((float)(myCenterX-10*Math.cos(myPointDirection*(Math.PI/180))), (float)(myCenterY-10*Math.sin(myPointDirection*(Math.PI/180))),7);
+   }
+ }
+ public void setX(int x) {myCenterX=x;}  
+ public int getX() {return (int)myCenterX;}
+ public void setY(int y) {myCenterY=y;}   
+ public int getY() {return (int)myCenterY;}   
+ public void setDirectionX(double x) {myDirectionX=x;}   
+ public double getDirectionX() {return myDirectionX;}   
+ public void setDirectionY(double y) {myDirectionY=y;}   
+ public double getDirectionY() {return myDirectionY;}   
+ public void setPointDirection(int degrees) {myPointDirection=degrees;}   
+ public double getPointDirection() {return myPointDirection;} 
+}//
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
@@ -201,12 +211,12 @@ class Star
     
     
   }
-}
+}//
 //fade
 public void fade(float x, float y, double d)
 {
   // private int diameter;
-// System.out.println(1);
+  // System.out.println(1);
   // stroke(255,255,255,10);
   noStroke();
   // fill(255,255,255,5);
@@ -215,3 +225,65 @@ public void fade(float x, float y, double d)
     ellipse(x,y,(float)diameter,(float)diameter);
   }
 }
+class Asteroid extends Floater
+{
+  private int mySize, type, spin;
+  // private int type;
+  Asteroid()
+  {
+    type = (int)(Math.random()*3+1);
+    mySize = (int)(Math.random()*6+2);
+    myCenterX=(int)(Math.random()*500);
+    myCenterY=(int)(Math.random()*500);
+    myDirectionX=Math.random()*6-3;
+    myDirectionY=Math.random()*6-3;
+    spin=(int)(Math.random()*10-5);
+    while (spin == 0) {spin=(int)(Math.random()*10-5);}
+    myPointDirection=(int)(Math.random()*360);
+    myColor=color(150,50,0);
+    //initialize variables and then design asteroid on graph paper, then make different sizes/shapes
+    
+    // xCorners=new int[corners];
+    // yCorners=new int[corners];
+    int [] x1 = {3*mySize,4*mySize,2*mySize,-2*mySize,-3*mySize,-4*mySize,-3*mySize,-2*mySize,0*mySize,1*mySize,2*mySize,4*mySize};
+    int [] y1 = {0*mySize,2*mySize,4*mySize,3*mySize,2*mySize,0*mySize,-2*mySize,-2*mySize,-4*mySize,-4*mySize,-3*mySize,-2*mySize};
+    int [] x2 = {0*mySize,1*mySize,3*mySize,4*mySize,4*mySize,2*mySize,1*mySize,-1*mySize,-2*mySize,-2*mySize,-4*mySize,-5*mySize,-3*mySize};
+    int [] y2 = {-4*mySize,-3*mySize,-2*mySize,1*mySize,3*mySize,4*mySize,2*mySize,2*mySize,3*mySize,4*mySize,3*mySize,-1*mySize,-3*mySize};
+    int [] x3 = {3*mySize,3*mySize,1*mySize,-2*mySize,-3*mySize,-4*mySize,-2*mySize,0*mySize,3*mySize,4*mySize,5*mySize};
+    int [] y3 = {0*mySize,2*mySize,4*mySize,4*mySize,3*mySize,-1*mySize,-1*mySize,-3*mySize,-4*mySize,-3*mySize,-1*mySize};
+    if(type==1)
+    {
+      corners=12;
+      xCorners=x1;
+      yCorners=y1;
+    }
+    else if(type==2)
+    {
+      corners=13;
+      xCorners=x2;
+      yCorners=y2;
+    }
+     else if(type==3)
+    {
+      corners=11;
+      xCorners=x3;
+      yCorners=y3;
+    }
+  }
+  public void setX(int x) {myCenterX=x;}  
+  public int getX() {return (int)myCenterX;}
+  public void setY(int y) {myCenterY=y;}   
+  public int getY() {return (int)myCenterY;}   
+  public void setDirectionX(double x) {myDirectionX=x;}   
+  public double getDirectionX() {return myDirectionX;}   
+  public void setDirectionY(double y) {myDirectionY=y;}   
+  public double getDirectionY() {return myDirectionY;}   
+  public void setPointDirection(int degrees) {myPointDirection=degrees;}   
+  public double getPointDirection() {return myPointDirection;} 
+  public void move()
+  {
+    rotate(spin);
+    super.move();
+  }
+
+}//
