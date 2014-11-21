@@ -1,19 +1,20 @@
 //Oliver Noss CompSci Block4
 SpaceShip voyager = new SpaceShip();
 Star [] galaxy = new Star[200];
-Asteroid [] belt = new Asteroid[25];
-
-//work on fade function, call it first, then use effect for hyperspace or rockets.
+// Asteroid [] belt = new Asteroid[25];
+ArrayList <Asteroid> belt = new ArrayList <Asteroid>();
+//Work on collide at line 300 
 public void setup() 
 {
   size(700,700);
   background(0);
   stroke(255);
+  // frameRate(5);
   for (int i = 0; i < galaxy.length; i++) {
     galaxy[i] = new Star();
   }
-  for (int i = 0; i < belt.length; i++) {
-    belt[i] = new Asteroid();
+  for (int i = 0; i < 10; i++) {
+    belt.add(new Asteroid());
   }
 }
 public void draw() 
@@ -22,10 +23,11 @@ public void draw()
   for (int i = 0; i < galaxy.length; i++) {
     galaxy[i].show();
   }
-  for (int i = 0; i < belt.length; i++) {
-    belt[i].show();
-    belt[i].move();
+  for (int i = 0; i < belt.size(); i++) {
+    belt.get(i).show();
+    belt.get(i).move();
   }
+  collide();
   strokeWeight(1);
   voyager.rockets();
   voyager.show();
@@ -54,30 +56,37 @@ public void keyPressed()
   }
   if (key == 'h')
     voyager.hyperspace();
+  if (key == CODED)
+  {
+    if (keyCode == UP)
+      belt.add(new Asteroid());
+    if (keyCode==DOWN && belt.size()>0)
+      belt.remove(belt.size()-1);
+  }
 }
 class SpaceShip extends Floater  
 {
   public SpaceShip()
   {
     corners=5;
-    xCorners=new int[corners];
-    yCorners=new int[corners];
-    xCorners[0]=-10;
-    xCorners[1]=10;
-    xCorners[2]=5;
-    xCorners[3]=5;
-    xCorners[4]=10;
-    yCorners[0]=0;
-    yCorners[1]=8;
-    yCorners[2]=4;
-    yCorners[3]=-4;
-    yCorners[4]=-8;
-    myColor=color(0,100,255);
-    myCenterX=350;
-    myCenterY=350;
-    myDirectionX=0;
-    myDirectionY=0;
-    myPointDirection=0;
+    xCorners = new int[corners];
+    yCorners = new int[corners];
+    xCorners[0] = -10;
+    xCorners[1] = 10;
+    xCorners[2] = 5;
+    xCorners[3] = 5;
+    xCorners[4] = 10;
+    yCorners[0] = 0;
+    yCorners[1] = 8;
+    yCorners[2] = 4;
+    yCorners[3] = -4;
+    yCorners[4] = -8;
+    myColor = color(0,100,255);
+    myCenterX = 350;
+    myCenterY = 350;
+    myDirectionX = 0;
+    myDirectionY = 0;
+    myPointDirection = 0;
 
   }
   public void hyperspace()
@@ -240,7 +249,7 @@ class Asteroid extends Floater
     spin=(int)(Math.random()*10-5);
     while (spin == 0) {spin=(int)(Math.random()*10-5);}
     myPointDirection=(int)(Math.random()*360);
-    myColor=color(150,50,0);
+    myColor=color(110,40,0);
     //initialize variables and then design asteroid on graph paper, then make different sizes/shapes
     
     // xCorners=new int[corners];
@@ -280,10 +289,30 @@ class Asteroid extends Floater
   public double getDirectionY() {return myDirectionY;}   
   public void setPointDirection(int degrees) {myPointDirection=degrees;}   
   public double getPointDirection() {return myPointDirection;} 
+  public int getSize() {return mySize;}
   public void move()
   {
     rotate(spin);
     super.move();
   }
+  public void destroy()
+  {
+    System.out.println("Boom");
+    fill(225,80,0,20);
+    fade((float)myCenterX,(float)myCenterY,mySize*11);
+    // ellipse((float)myCenterX,(float)myCenterY,mySize*11,mySize*11);
+  }
 
 }//
+// 
+public void collide()
+{
+  for(int i = 0; i< belt.size(); i++)//turn into normal for loop so remove works
+  {
+    if (dist(belt.get(i).getX(),belt.get(i).getY(),voyager.getX(),voyager.getY()) < belt.get(i).getSize()*3+10)
+    {
+      belt.get(i).destroy();
+      belt.remove(i);// write destroy function
+    }
+  }
+}
